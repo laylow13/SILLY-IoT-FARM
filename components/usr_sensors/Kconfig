@@ -1,0 +1,15 @@
+menu "usr Sensors"
+    config USR_SENSOR_USE_BME280
+        bool "use bme280"
+        default y
+        help
+            "use bme280"
+    config USR_SENSOR_USE_SHT3x
+        bool "use SHT3x"
+        default y
+        help
+            "use SHT3x"
+    config USR_SENSOR_USE_VMEL6040
+        bool "use VMEL6040"
+        default y
+endmenu
