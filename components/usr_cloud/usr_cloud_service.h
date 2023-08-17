@@ -15,6 +15,9 @@ namespace usr {
     extern esp_rmaker_device_t *switch_light;
     extern esp_rmaker_device_t *switch_water;
     extern esp_rmaker_device_t *switch_mode;
+    extern esp_rmaker_param_t *light_power;
+    extern esp_rmaker_param_t *water_power;
+    extern esp_rmaker_param_t *auto_mode_power;
     extern esp_rmaker_param_t *light_red;
     extern esp_rmaker_param_t *light_green;
     extern esp_rmaker_param_t *light_blue;

@@ -7,4 +7,4 @@ idf_component_register(SRCS
         lib/ui_events.cpp
         lib/ui_helpers.c
         INCLUDE_DIRS . lib
-        REQUIRES button esp_lvgl_port lvgl usr_motor usr_light)
+        REQUIRES button esp_lvgl_port lvgl usr_motor usr_light usr_cloud)

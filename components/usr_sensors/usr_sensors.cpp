@@ -63,6 +63,12 @@ namespace usr {
             return ESP_FAIL;
         }
 #endif
+        //earth humidity
+        gpio_config_t config{1ULL << 41, GPIO_MODE_INPUT,
+                             GPIO_PULLUP_DISABLE, GPIO_PULLDOWN_DISABLE,
+                             GPIO_INTR_DISABLE};
+        gpio_config(&config);
+
         return ESP_OK;
     }
 
@@ -129,9 +135,11 @@ namespace usr {
                 lv_event_send(light_sensor_data2, (lv_event_code_t) (USR_SENSOR_UPDATE), &wave_length);
                 lv_event_send(light_sensor_data3, (lv_event_code_t) (USR_SENSOR_UPDATE), &cct);
                 lvgl_port_unlock();
-                ESP_ERROR_CHECK(esp_rmaker_param_update_and_report(light_lux_value, esp_rmaker_float(ambient_light_Lux)));
+                ESP_ERROR_CHECK(
+                        esp_rmaker_param_update_and_report(light_lux_value, esp_rmaker_float(ambient_light_Lux)));
                 ESP_ERROR_CHECK(esp_rmaker_param_update_and_report(light_cct_value, esp_rmaker_float(cct)));
-                ESP_ERROR_CHECK(esp_rmaker_param_update_and_report(light_wavelength_value, esp_rmaker_float(wave_length)));
+                ESP_ERROR_CHECK(
+                        esp_rmaker_param_update_and_report(light_wavelength_value, esp_rmaker_float(wave_length)));
             }
 #else
             light_intensity = .0;
@@ -139,12 +147,21 @@ namespace usr {
             light_uv = {};
 
 #endif
+            //earth humidity
+            int earth_humidity_threshold = gpio_get_level(GPIO_NUM_41);
+            lvgl_port_lock(0);
+            if (earth_humidity_threshold)
+                lv_led_on(earth_humidity_led);
+            else
+                lv_led_off(earth_humidity_led);
+            lvgl_port_unlock();
+
             sensor_data = {humidity, temperature, pressure, light_sensor_data};
             ESP_LOGI("usr sensors", "humidity:%f,temperature:%f,pressure:%f", humidity, temperature, pressure);
             ESP_LOGI("usr sensors", "light r:%f,g:%f,b:%f,w:%f", light_rgbw.r, light_rgbw.g, light_rgbw.b,
                      light_rgbw.w);
             xQueueSend(sensor_data_queue, &sensor_data, 10 / portTICK_PERIOD_MS);
-            vTaskDelayUntil(&lastwaketime, 30000 / portTICK_PERIOD_MS);
+            vTaskDelayUntil(&lastwaketime, 10000 / portTICK_PERIOD_MS);
         }
     }
 
@@ -154,7 +171,7 @@ namespace usr {
             ESP_LOGE("sensor", "sensor task aborted");
             return ESP_FAIL;
         }
-        xTaskCreate(sensors_task, "sensors", 3072, nullptr, 1, nullptr);
+        xTaskCreate(sensors_task, "sensors", 4096, nullptr, 2, nullptr);
         return ESP_OK;
     }
 
@@ -166,7 +183,6 @@ namespace usr {
         lv_event_send(pressure_data, (lv_event_code_t) (USR_SENSOR_UPDATE), &test_value);
         lv_event_send(light_intensity_data, (lv_event_code_t) (USR_SENSOR_UPDATE), &test_value);
         lvgl_port_unlock();
-
         return ESP_OK;
     }
 

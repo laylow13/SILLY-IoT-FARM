@@ -19,7 +19,7 @@ void light_sensor_event_cb(lv_event_t *event);
 void light_cfg_entrence(lv_event_t *event);
 void light_cfg_out(lv_event_t *event);
 void light_color_update(lv_event_t *event);
-
+//void void_cb(lv_event_t *event);
 #ifdef __cplusplus
 }
 #endif

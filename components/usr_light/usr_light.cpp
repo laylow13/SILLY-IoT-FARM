@@ -12,7 +12,7 @@ namespace usr {
     xQueueHandle light_queue = xQueueCreate(1, sizeof(color_t));
 
     static void light_task(void *pvParameters) {
-        color_t color{0, 0xff, 0, 0};
+        color_t color{0, 0, 0, 0};
         led_state new_state{};
         uint32_t color_value;
         while (1) {
@@ -29,7 +29,7 @@ namespace usr {
     esp_err_t light_task_create() {
         ESP_RETURN_ON_ERROR(ws2812_control_init(), "light", "led init error,task aborted");
         light_queue = xQueueCreate(1, sizeof(color_t));
-        xTaskCreate(light_task, "light task", 2048, nullptr, 2, nullptr);
+        xTaskCreate(light_task, "light task", 4096, nullptr, 3, nullptr);
         return ESP_OK;
     }
 

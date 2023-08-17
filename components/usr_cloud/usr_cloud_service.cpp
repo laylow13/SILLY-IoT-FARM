@@ -14,6 +14,7 @@
 #include <cstring>
 #include "usr_light.h"
 #include "usr_motor.h"
+#include "esp_lvgl_port.h"
 #include "ui.h"
 #include "esp_log.h"
 
@@ -27,6 +28,9 @@ namespace usr {
     esp_rmaker_device_t *switch_light;
     esp_rmaker_device_t *switch_water;
     esp_rmaker_device_t *switch_mode;
+    esp_rmaker_param_t *light_power;
+    esp_rmaker_param_t *water_power;
+    esp_rmaker_param_t *auto_mode_power;
     esp_rmaker_param_t *light_red;
     esp_rmaker_param_t *light_green;
     esp_rmaker_param_t *light_blue;
@@ -52,16 +56,40 @@ namespace usr {
             usr::color_t color_cmd{0, 0, 0, 0};
             if (light_on) {
                 color_cmd = {.red=uint8_t(light_r_val), .green=uint8_t(light_g_val), .blue=uint8_t(light_b_val)};
+                lvgl_port_lock(0);
+                lv_obj_add_state(light_Switch, LV_STATE_CHECKED);
+                lvgl_port_unlock();
+            } else {
+                lvgl_port_lock(0);
+                lv_obj_clear_state(light_Switch, LV_STATE_CHECKED);
+                lvgl_port_unlock();
             }
             xQueueSend(usr::light_queue, &color_cmd, pdMS_TO_TICKS(5));
         } else if (strcmp(device_name, "浇水") == 0) {
             if (strcmp(param_name, ESP_RMAKER_DEF_POWER_NAME) == 0) {
                 int motor_level = val.val.b ? 1 : 0;
+                if (motor_level) {
+                    lvgl_port_lock(0);
+                    lv_obj_add_state(water_Switch, LV_STATE_CHECKED);
+                    lvgl_port_unlock();
+                } else {
+                    lvgl_port_lock(0);
+                    lv_obj_clear_state(water_Switch, LV_STATE_CHECKED);
+                    lvgl_port_unlock();
+                }
                 xQueueSend(usr::motor_queue, &motor_level, pdMS_TO_TICKS(5));
             }
         } else if (strcmp(device_name, "专家模式") == 0) {
             if (strcmp(param_name, ESP_RMAKER_DEF_POWER_NAME) == 0) {
-
+                if (val.val.b) {
+                    lvgl_port_lock(0);
+                    lv_obj_add_state(auto_mode_Switch, LV_STATE_CHECKED);
+                    lvgl_port_unlock();
+                } else {
+                    lvgl_port_lock(0);
+                    lv_obj_clear_state(auto_mode_Switch, LV_STATE_CHECKED);
+                    lvgl_port_unlock();
+                }
             }
         }
         return ESP_OK;
@@ -86,9 +114,9 @@ namespace usr {
         light_lux_value = esp_rmaker_param_create("光强lux", nullptr, esp_rmaker_float(0.0f),
                                                   PROP_FLAG_READ);
         esp_rmaker_device_add_param(sensor_temp, temperature_value);
-        esp_rmaker_device_assign_primary_param(sensor_temp,temperature_value);
+        esp_rmaker_device_assign_primary_param(sensor_temp, temperature_value);
         esp_rmaker_device_add_param(sensor_humidity, humidity_value);
-        esp_rmaker_device_assign_primary_param(sensor_humidity,humidity_value);
+        esp_rmaker_device_assign_primary_param(sensor_humidity, humidity_value);
         esp_rmaker_device_add_param(sensor_pressure, pressure_value);
         esp_rmaker_device_assign_primary_param(sensor_pressure, pressure_value);
         esp_rmaker_device_add_param(sensor_light, light_cct_value);
@@ -99,7 +127,9 @@ namespace usr {
         switch_light = esp_rmaker_switch_device_create("补光", nullptr, false);
         switch_water = esp_rmaker_switch_device_create("浇水", nullptr, false);
         switch_mode = esp_rmaker_switch_device_create("专家模式", nullptr, false);
-
+        light_power = esp_rmaker_device_get_param_by_name(switch_light, ESP_RMAKER_DEF_POWER_NAME);
+        water_power = esp_rmaker_device_get_param_by_name(switch_water, ESP_RMAKER_DEF_POWER_NAME);
+        auto_mode_power = esp_rmaker_device_get_param_by_name(switch_mode, ESP_RMAKER_DEF_POWER_NAME);
         light_red = esp_rmaker_param_create("红", nullptr, esp_rmaker_int(127),
                                             PROP_FLAG_READ | PROP_FLAG_WRITE);
         esp_rmaker_param_add_bounds(light_red, esp_rmaker_int(0), esp_rmaker_int(255), esp_rmaker_int(1));

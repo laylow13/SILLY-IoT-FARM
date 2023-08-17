@@ -11,6 +11,7 @@ void ui_Screen1_screen_init(void) {
 
     static lv_style_t label_chinese_style;
     static lv_style_t panel_content_style;
+    static lv_style_t panel_focus_style;
 
     lv_style_init(&label_chinese_style);
     lv_style_set_text_font(&label_chinese_style, &usr_chinese_font);
@@ -18,12 +19,15 @@ void ui_Screen1_screen_init(void) {
     lv_style_init(&panel_content_style);
     lv_style_set_width(&panel_content_style, 230);
     lv_style_set_height(&panel_content_style, 50);
+
+    lv_style_init(&panel_focus_style);
+    lv_style_set_border_color(&panel_focus_style, lv_palette_main(LV_PALETTE_BLUE));
     //****************状态栏***************//
     ui_Panel9 = lv_obj_create(ui_Screen1);
     lv_obj_set_width(ui_Panel9, 230);
     lv_obj_set_height(ui_Panel9, 40);
     lv_obj_set_align(ui_Panel9, LV_ALIGN_TOP_MID);
-    lv_obj_clear_flag(ui_Panel9, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+    lv_obj_clear_flag(ui_Panel9, LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_CLICKABLE);      /// Flags
     lv_obj_set_style_bg_color(ui_Panel9, lv_palette_main(LV_PALETTE_GREY), 0);
 
     wifi_symbol = lv_label_create(ui_Panel9);
@@ -38,13 +42,14 @@ void ui_Screen1_screen_init(void) {
     lv_obj_set_width(ui_Panel8, 230);
     lv_obj_set_height(ui_Panel8, 275);
     lv_obj_set_align(ui_Panel8, LV_ALIGN_BOTTOM_MID);
-    //lv_obj_clear_flag(ui_Panel8, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+    lv_obj_clear_flag(ui_Panel8, LV_OBJ_FLAG_CLICKABLE);      /// Flags
     //****************温度***************//
     ui_Panel1 = lv_obj_create(ui_Panel8);
     lv_obj_add_style(ui_Panel1, &panel_content_style, 0);
     lv_obj_set_align(ui_Panel1, LV_ALIGN_TOP_MID);
     lv_obj_clear_flag(ui_Panel1, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
-    lv_obj_add_flag(ui_Panel1, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_CLICK_FOCUSABLE);
+    lv_obj_add_flag(ui_Panel1, LV_OBJ_FLAG_SCROLL_ON_FOCUS);
+    lv_obj_add_style(ui_Panel1, &panel_focus_style, LV_STATE_FOCUSED);
 
     ui_Label1 = lv_label_create(ui_Panel1);
     lv_obj_set_width(ui_Label1, LV_SIZE_CONTENT);   /// 1
@@ -58,14 +63,16 @@ void ui_Screen1_screen_init(void) {
     lv_obj_set_width(temperature_data, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(temperature_data, LV_SIZE_CONTENT);    /// 1
     lv_obj_set_align(temperature_data, LV_ALIGN_RIGHT_MID);
-    lv_obj_add_event_cb(temperature_data, common_sensor_event_cb, USR_SENSOR_UPDATE, NULL);
+    static uint8_t temperature_id = 0;
+    lv_obj_add_event_cb(temperature_data, common_sensor_event_cb, USR_SENSOR_UPDATE, &temperature_id);
     //****************湿度***************//
     ui_Panel2 = lv_obj_create(ui_Panel8);
 //    lv_obj_add_style(ui_Panel2, &panel_content_style, 0);
     lv_obj_set_size(ui_Panel2, 230, 100);
     lv_obj_align_to(ui_Panel2, ui_Panel1, LV_ALIGN_OUT_BOTTOM_MID, 0, 5);
     lv_obj_clear_flag(ui_Panel2, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
-    lv_obj_add_flag(ui_Panel2, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_CLICK_FOCUSABLE);
+    lv_obj_add_flag(ui_Panel2, LV_OBJ_FLAG_SCROLL_ON_FOCUS);
+    lv_obj_add_style(ui_Panel2, &panel_focus_style, LV_STATE_FOCUSED);
 
     ui_Label2 = lv_label_create(ui_Panel2);
     lv_obj_set_width(ui_Label2, LV_SIZE_CONTENT);   /// 1
@@ -78,7 +85,8 @@ void ui_Screen1_screen_init(void) {
     lv_obj_set_width(humidity_data, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(humidity_data, LV_SIZE_CONTENT);    /// 1
     lv_obj_set_align(humidity_data, LV_ALIGN_TOP_RIGHT);
-    lv_obj_add_event_cb(humidity_data, common_sensor_event_cb, USR_SENSOR_UPDATE, NULL);
+    static uint8_t humidity_id=1;
+    lv_obj_add_event_cb(humidity_data, common_sensor_event_cb, USR_SENSOR_UPDATE, &humidity_id);
 
     earth_humidity_label = lv_label_create(ui_Panel2);
     lv_obj_set_width(earth_humidity_label, LV_SIZE_CONTENT);   /// 1
@@ -99,7 +107,8 @@ void ui_Screen1_screen_init(void) {
     lv_obj_add_style(ui_Panel3, &panel_content_style, 0);
     lv_obj_align_to(ui_Panel3, ui_Panel2, LV_ALIGN_OUT_BOTTOM_MID, 0, 5);
     lv_obj_clear_flag(ui_Panel3, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
-    lv_obj_add_flag(ui_Panel3, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_CLICK_FOCUSABLE);
+    lv_obj_add_flag(ui_Panel3, LV_OBJ_FLAG_SCROLL_ON_FOCUS);
+    lv_obj_add_style(ui_Panel3, &panel_focus_style, LV_STATE_FOCUSED);
 
     ui_Label4 = lv_label_create(ui_Panel3);
     lv_obj_set_width(ui_Label4, LV_SIZE_CONTENT);   /// 1
@@ -112,14 +121,16 @@ void ui_Screen1_screen_init(void) {
     lv_obj_set_width(pressure_data, LV_SIZE_CONTENT);   /// 1
     lv_obj_set_height(pressure_data, LV_SIZE_CONTENT);    /// 1
     lv_obj_set_align(pressure_data, LV_ALIGN_RIGHT_MID);
-    lv_obj_add_event_cb(pressure_data, common_sensor_event_cb, USR_SENSOR_UPDATE, NULL);
+    static uint8_t pressure_id=2;
+    lv_obj_add_event_cb(pressure_data, common_sensor_event_cb, USR_SENSOR_UPDATE, &pressure_id);
     //****************光强***************//
     ui_Panel4 = lv_obj_create(ui_Panel8);
     lv_obj_set_size(ui_Panel4, 230, 150);
 //    lv_obj_add_style(ui_Panel4, &panel_content_style, 0);
     lv_obj_align_to(ui_Panel4, ui_Panel3, LV_ALIGN_OUT_BOTTOM_MID, 0, 5);
     lv_obj_clear_flag(ui_Panel4, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
-    lv_obj_add_flag(ui_Panel4, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_CLICK_FOCUSABLE);
+    lv_obj_add_flag(ui_Panel4, LV_OBJ_FLAG_SCROLL_ON_FOCUS);
+    lv_obj_add_style(ui_Panel4, &panel_focus_style, LV_STATE_FOCUSED);
 
     ui_Label3 = lv_label_create(ui_Panel4);
     lv_obj_set_width(ui_Label3, LV_SIZE_CONTENT);   /// 1
@@ -167,7 +178,7 @@ void ui_Screen1_screen_init(void) {
     ui_Panel5 = lv_obj_create(ui_Panel8);
     lv_obj_add_style(ui_Panel5, &panel_content_style, 0);
     lv_obj_align_to(ui_Panel5, ui_Panel4, LV_ALIGN_OUT_BOTTOM_MID, 0, 5);
-    lv_obj_clear_flag(ui_Panel5, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+    lv_obj_clear_flag(ui_Panel5, LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_CLICKABLE);      /// Flags
 
     ui_Label8 = lv_label_create(ui_Panel5);
     lv_obj_set_width(ui_Label8, LV_SIZE_CONTENT);   /// 1
@@ -228,4 +239,6 @@ void ui_Screen1_screen_init(void) {
     lv_obj_set_width(auto_mode_Switch, 50);
     lv_obj_set_height(auto_mode_Switch, 25);
     lv_obj_set_align(auto_mode_Switch, LV_ALIGN_RIGHT_MID);
+    static uint8_t auto_mode_switch_id = 2;
+    lv_obj_add_event_cb(auto_mode_Switch, switch_event_cb, LV_EVENT_CLICKED, &auto_mode_switch_id);
 }

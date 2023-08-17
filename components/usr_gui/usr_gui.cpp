@@ -32,6 +32,7 @@
 namespace usr {
     static lv_disp_t *disp;
     static lv_indev_t *indev_handle;
+    lv_group_t *input_group;
 
     static esp_err_t disp_init(esp_lcd_panel_io_handle_t *_io_handle, esp_lcd_panel_handle_t *_panel_handle) {
         spi_bus_config_t buscfg = {
@@ -83,7 +84,7 @@ namespace usr {
     static esp_err_t lv_add_disp() {
         esp_lcd_panel_io_handle_t io_handle = nullptr;
         esp_lcd_panel_handle_t panel_handle = nullptr;
-        ESP_RETURN_ON_ERROR(disp_init(&io_handle, &panel_handle),"display","disp init error");
+        ESP_RETURN_ON_ERROR(disp_init(&io_handle, &panel_handle), "display", "disp init error");
         /* Add LCD screen */
         const lvgl_port_display_cfg_t disp_cfg = {
                 .io_handle = io_handle,
@@ -139,22 +140,17 @@ namespace usr {
     static void gui_create() {
         /* Wait for the other task done the screen operation */
         lvgl_port_lock(0);
+        input_group= lv_group_create();
+        lv_indev_set_group(indev_handle, input_group);
         ui_init();
-        lv_group_t *g = lv_group_create();
-        lv_group_add_obj(g,ui_Panel1);
-        lv_group_add_obj(g,ui_Panel2);
-        lv_group_add_obj(g,ui_Panel3);
-        lv_group_add_obj(g,ui_Panel4);
-        lv_group_add_obj(g,water_Switch);
-        lv_group_add_obj(g,light_Switch);
-        lv_group_add_obj(g,light_cfg_btn);
-        lv_group_add_obj(g,auto_mode_Switch);
-        lv_group_add_obj(g,red_slider);
-        lv_group_add_obj(g,green_slider);
-        lv_group_add_obj(g,blue_slider);
-        lv_group_add_obj(g,return_button);
-        //        lv_group_set_default(g);
-        lv_indev_set_group(indev_handle, g);
+        lv_group_add_obj(input_group,ui_Panel1);
+        lv_group_add_obj(input_group,ui_Panel2);
+        lv_group_add_obj(input_group,ui_Panel3);
+        lv_group_add_obj(input_group,ui_Panel4);
+        lv_group_add_obj(input_group, water_Switch);
+        lv_group_add_obj(input_group, light_Switch);
+        lv_group_add_obj(input_group, light_cfg_btn);
+        lv_group_add_obj(input_group, auto_mode_Switch);
         lvgl_port_unlock();
     }
 
