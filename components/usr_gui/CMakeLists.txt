@@ -1,5 +1,8 @@
 idf_component_register(SRCS
         usr_gui.cpp
+        lib/screens/data_temp_screen.c
+        lib/screens/data_light_screen.c
+        lib/screens/data_humid_screen.c
         lib/screens/ui_Screen1.c
         lib/screens/ui_Screen2.c
         lib/fonts/usr_chinese_font.c

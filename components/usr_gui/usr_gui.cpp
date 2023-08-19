@@ -31,7 +31,7 @@
 
 namespace usr {
     static lv_disp_t *disp;
-    static lv_indev_t *indev_handle;
+    lv_indev_t *indev_handle;
     lv_group_t *input_group;
 
     static esp_err_t disp_init(esp_lcd_panel_io_handle_t *_io_handle, esp_lcd_panel_handle_t *_panel_handle) {
@@ -150,7 +150,7 @@ namespace usr {
         lv_group_add_obj(input_group, water_Switch);
         lv_group_add_obj(input_group, light_Switch);
         lv_group_add_obj(input_group, light_cfg_btn);
-        lv_group_add_obj(input_group, auto_mode_Switch);
+//        lv_group_add_obj(input_group, auto_mode_Switch);
         lvgl_port_unlock();
     }
 

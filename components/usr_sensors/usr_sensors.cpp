@@ -79,6 +79,7 @@ namespace usr {
         rgbw_t light_rgbw{};
         light_data_t light_sensor_data{};
         sensor_data_t sensor_data{};
+        bool flag = true;
         while (1) {
             esp_err_t ret;
 #if CONFIG_USR_SENSOR_USE_SHT3x
@@ -101,6 +102,11 @@ namespace usr {
             } else {
                 lvgl_port_lock(0);
                 lv_event_send(temperature_data, (lv_event_code_t) (USR_SENSOR_UPDATE), &temperature);
+                if (flag) {
+                    ser->y_points[0] = short(temperature);
+                    lv_chart_refresh(temp_chart);
+                    flag = false;
+                }
                 lvgl_port_unlock();
                 ESP_ERROR_CHECK(esp_rmaker_param_update_and_report(temperature_value, esp_rmaker_float(temperature)));
             }
@@ -161,7 +167,7 @@ namespace usr {
             ESP_LOGI("usr sensors", "light r:%f,g:%f,b:%f,w:%f", light_rgbw.r, light_rgbw.g, light_rgbw.b,
                      light_rgbw.w);
             xQueueSend(sensor_data_queue, &sensor_data, 10 / portTICK_PERIOD_MS);
-            vTaskDelayUntil(&lastwaketime, 10000 / portTICK_PERIOD_MS);
+            vTaskDelayUntil(&lastwaketime, 30000 / portTICK_PERIOD_MS);
         }
     }
 
@@ -182,6 +188,9 @@ namespace usr {
         lv_event_send(temperature_data, (lv_event_code_t) (USR_SENSOR_UPDATE), &test_value);
         lv_event_send(pressure_data, (lv_event_code_t) (USR_SENSOR_UPDATE), &test_value);
         lv_event_send(light_intensity_data, (lv_event_code_t) (USR_SENSOR_UPDATE), &test_value);
+        short test = 25;
+        ser->y_points[0] = 25;
+        lv_chart_refresh(temp_chart);
         lvgl_port_unlock();
         return ESP_OK;
     }

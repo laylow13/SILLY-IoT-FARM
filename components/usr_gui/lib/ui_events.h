@@ -19,6 +19,9 @@ void light_sensor_event_cb(lv_event_t *event);
 void light_cfg_entrence(lv_event_t *event);
 void light_cfg_out(lv_event_t *event);
 void light_color_update(lv_event_t *event);
+void data_input_event(lv_event_t *e);
+void ta_event_cb(lv_event_t *e);
+void temp_analysis_event(lv_event_t *e);
 //void void_cb(lv_event_t *event);
 #ifdef __cplusplus
 }

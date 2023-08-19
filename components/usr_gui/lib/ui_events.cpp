@@ -8,7 +8,10 @@
 #include "ui.h"
 #include "usr_cloud_service.h"
 
-namespace usr { extern lv_group_t *input_group; }
+namespace usr {
+    extern lv_group_t *input_group;
+    extern lv_indev_t *indev_handle;
+}
 extern "C" {
 inline void slider_check_max(lv_obj_t *x) { if (lv_slider_get_value(x) == 100) lv_slider_set_value(x, 0, LV_ANIM_ON); }
 uint32_t USR_SENSOR_UPDATE = lv_event_register_id();
@@ -99,6 +102,7 @@ void light_cfg_entrence(lv_event_t *event) {
     lv_disp_load_scr(ui_Screen2);
 }
 void light_cfg_out(lv_event_t *event) {
+    lv_indev_set_group(usr::indev_handle, usr::input_group);
     lv_group_remove_all_objs(usr::input_group);
     lv_group_add_obj(usr::input_group, ui_Panel1);
     lv_group_add_obj(usr::input_group, ui_Panel2);
@@ -107,7 +111,7 @@ void light_cfg_out(lv_event_t *event) {
     lv_group_add_obj(usr::input_group, water_Switch);
     lv_group_add_obj(usr::input_group, light_Switch);
     lv_group_add_obj(usr::input_group, light_cfg_btn);
-    lv_group_add_obj(usr::input_group, auto_mode_Switch);
+//    lv_group_add_obj(usr::input_group, auto_mode_Switch);
     lv_disp_load_scr(ui_Screen1);
 }
 void light_color_update(lv_event_t *event) {
@@ -130,5 +134,58 @@ void light_color_update(lv_event_t *event) {
 //        ESP_LOGI("CLICK TEST", "FOCUSED");
 //    }
 //}
-
+void temp_analysis_event(lv_event_t *e) {
+    auto code = lv_event_get_code(e);
+    if (code == LV_EVENT_CLICKED) {
+//        lv_group_remove_all_objs(usr::input_group);
+//        lv_group_add_obj(usr::input_group, up_btn);
+//        lv_group_add_obj(usr::input_group, dn_btn);
+//        lv_group_add_obj(usr::input_group, rtn_btn);
+        lv_indev_set_group(usr::indev_handle, temp_screen_group);
+        lv_group_add_obj(temp_screen_group, up_btn);
+        lv_group_add_obj(temp_screen_group, dn_btn);
+        lv_group_add_obj(temp_screen_group, rtn_btn);
+        lv_disp_load_scr(data_temp_screen);
+    }
 }
+
+void data_input_event(lv_event_t *e) {
+    event_id = *(uint8_t *) lv_event_get_user_data(e);
+//    lv_group_remove_all_objs(usr::input_group);
+//    lv_group_add_obj(usr::input_group, kb);
+    lv_indev_set_group(usr::indev_handle, input_screen_group);
+    lv_group_add_obj(input_screen_group, kb);
+    lv_disp_load_scr(data_input_screen);
+}
+
+void ta_event_cb(lv_event_t *e) {
+    lv_obj_t *ta = lv_event_get_target(e);
+    const char *txt = lv_textarea_get_text(ta);
+    auto code = lv_event_get_code(e);
+    if (code == LV_EVENT_READY) {
+        kb_val = strtof(txt, NULL);
+        if (event_id) {
+            dn_val = kb_val;
+            lv_label_set_text_fmt(dn_num, "%.2f", dn_val);
+            for (uint8_t i = 0; i < 12; i++) {
+                dn_ser->y_points[i] = short(dn_val);
+
+            }
+            lv_chart_refresh(temp_chart);
+        } else {
+            up_val = kb_val;
+            lv_label_set_text_fmt(up_num, "%.2f", up_val);
+            for (uint8_t i = 0; i < 12; i++) {
+                up_ser->y_points[i] = short(up_val);
+            }
+            lv_chart_refresh(temp_chart);
+        }
+        lv_indev_set_group(usr::indev_handle, temp_screen_group);
+        lv_group_add_obj(temp_screen_group, up_btn);
+        lv_group_add_obj(temp_screen_group, dn_btn);
+        lv_group_add_obj(temp_screen_group, rtn_btn);
+        lv_disp_load_scr(data_temp_screen);
+    }
+}
+}
+

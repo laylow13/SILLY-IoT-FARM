@@ -10,55 +10,57 @@
 
 // SCREEN: ui_Screen1
 void ui_Screen1_screen_init(void);
-lv_obj_t * ui_Screen1;
-lv_obj_t * ui_Panel8;
-lv_obj_t* ui_Panel9;
-lv_obj_t * ui_Panel1;
-lv_obj_t * ui_Label1;
-lv_obj_t * temperature_data;
-lv_obj_t * ui_Panel2;
-lv_obj_t * ui_Label2;
-lv_obj_t * humidity_data;
-lv_obj_t * ui_Panel3;
-lv_obj_t * ui_Label4;
-lv_obj_t * pressure_data;
-lv_obj_t * ui_Panel4;
-lv_obj_t * ui_Label3;
-lv_obj_t * light_intensity_data;
-lv_obj_t * ui_Panel5;
-lv_obj_t * ui_Label8;
-lv_obj_t * water_Switch;
-lv_obj_t * ui_Panel6;
-lv_obj_t * ui_Label11;
-lv_obj_t *light_cfg_btn;
-lv_obj_t * light_Switch;
-lv_obj_t* wifi_symbol;
-lv_obj_t* wifi_label;
-lv_obj_t * ui_Panel7;
-lv_obj_t* auto_mode_label;
-lv_obj_t* auto_mode_Switch;
-//lv_obj_t* earth_humidity_panel;
-lv_obj_t* earth_humidity_label;
-lv_obj_t* earth_humidity_led;
-lv_obj_t* light_sensor_data2;
-lv_obj_t* light_sensor_label2;
-lv_obj_t* light_sensor_data3;
-lv_obj_t* light_sensor_label3;
 
-lv_obj_t * ui____initial_actions0;
+lv_obj_t *ui_Screen1;
+lv_obj_t *ui_Panel8;
+lv_obj_t *ui_Panel9;
+lv_obj_t *ui_Panel1;
+lv_obj_t *ui_Label1;
+lv_obj_t *temperature_data;
+lv_obj_t *ui_Panel2;
+lv_obj_t *ui_Label2;
+lv_obj_t *humidity_data;
+lv_obj_t *ui_Panel3;
+lv_obj_t *ui_Label4;
+lv_obj_t *pressure_data;
+lv_obj_t *ui_Panel4;
+lv_obj_t *ui_Label3;
+lv_obj_t *light_intensity_data;
+lv_obj_t *ui_Panel5;
+lv_obj_t *ui_Label8;
+lv_obj_t *water_Switch;
+lv_obj_t *ui_Panel6;
+lv_obj_t *ui_Label11;
+lv_obj_t *light_cfg_btn;
+lv_obj_t *light_Switch;
+lv_obj_t *wifi_symbol;
+lv_obj_t *wifi_label;
+//lv_obj_t * ui_Panel7;
+//lv_obj_t* auto_mode_label;
+//lv_obj_t* auto_mode_Switch;
+//lv_obj_t* earth_humidity_panel;
+lv_obj_t *earth_humidity_label;
+lv_obj_t *earth_humidity_led;
+lv_obj_t *light_sensor_data2;
+lv_obj_t *light_sensor_label2;
+lv_obj_t *light_sensor_data3;
+lv_obj_t *light_sensor_label3;
+
+lv_obj_t *ui____initial_actions0;
 
 
 void ui_Screen2_screen_init(void);
-lv_obj_t* ui_Screen2;
-lv_obj_t* light_cfg_panel;
-lv_obj_t* red_slider;
-lv_obj_t* green_slider;
-lv_obj_t* blue_slider;
-lv_obj_t* light_cfg_label;
-lv_obj_t* color_panel;
-lv_obj_t* return_panel;
-lv_obj_t* return_button;
-lv_obj_t* button_label;
+
+lv_obj_t *ui_Screen2;
+lv_obj_t *light_cfg_panel;
+lv_obj_t *red_slider;
+lv_obj_t *green_slider;
+lv_obj_t *blue_slider;
+lv_obj_t *light_cfg_label;
+lv_obj_t *color_panel;
+lv_obj_t *return_panel;
+lv_obj_t *return_button;
+lv_obj_t *button_label;
 
 
 ///////////////////// TEST LVGL SETTINGS ////////////////////
@@ -75,14 +77,15 @@ lv_obj_t* button_label;
 
 ///////////////////// SCREENS ////////////////////
 
-void ui_init(void)
-{
-    lv_disp_t * dispp = lv_disp_get_default();
-    lv_theme_t * theme = lv_theme_default_init(dispp, lv_palette_main(LV_PALETTE_BLUE), lv_palette_main(LV_PALETTE_RED),
-                                               false, LV_FONT_DEFAULT);
+void ui_init(void) {
+    lv_disp_t *dispp = lv_disp_get_default();
+    lv_theme_t *theme = lv_theme_default_init(dispp, lv_palette_main(LV_PALETTE_BLUE), lv_palette_main(LV_PALETTE_RED),
+                                              false, LV_FONT_DEFAULT);
     lv_disp_set_theme(dispp, theme);
     ui_Screen1_screen_init();
     ui_Screen2_screen_init();
+    data_temp_screen_init();
+    data_input_screen_init();
     ui____initial_actions0 = lv_obj_create(NULL);
     lv_disp_load_scr(ui_Screen1);
 }

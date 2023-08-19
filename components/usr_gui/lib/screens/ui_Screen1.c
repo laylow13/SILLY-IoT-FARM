@@ -48,8 +48,9 @@ void ui_Screen1_screen_init(void) {
     lv_obj_add_style(ui_Panel1, &panel_content_style, 0);
     lv_obj_set_align(ui_Panel1, LV_ALIGN_TOP_MID);
     lv_obj_clear_flag(ui_Panel1, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
-    lv_obj_add_flag(ui_Panel1, LV_OBJ_FLAG_SCROLL_ON_FOCUS);
+    lv_obj_add_flag(ui_Panel1, LV_OBJ_FLAG_CLICKABLE| LV_OBJ_FLAG_SCROLL_ON_FOCUS);
     lv_obj_add_style(ui_Panel1, &panel_focus_style, LV_STATE_FOCUSED);
+    lv_obj_add_event_cb(ui_Panel1,temp_analysis_event,LV_EVENT_CLICKED,NULL);
 
     ui_Label1 = lv_label_create(ui_Panel1);
     lv_obj_set_width(ui_Label1, LV_SIZE_CONTENT);   /// 1
@@ -223,22 +224,22 @@ void ui_Screen1_screen_init(void) {
     static uint8_t light_switch_id = 1;
     lv_obj_add_event_cb(light_Switch, switch_event_cb, LV_EVENT_CLICKED, &light_switch_id);
     ///
-    ui_Panel7 = lv_obj_create(ui_Panel8);
-    lv_obj_add_style(ui_Panel7, &panel_content_style, 0);
-    lv_obj_align_to(ui_Panel7, ui_Panel6, LV_ALIGN_OUT_BOTTOM_MID, 0, 5);
-    lv_obj_clear_flag(ui_Panel7, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
-
-    auto_mode_label = lv_label_create(ui_Panel7);
-    lv_obj_set_width(auto_mode_label, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(auto_mode_label, LV_SIZE_CONTENT);    /// 1
-    lv_obj_set_align(auto_mode_label, LV_ALIGN_LEFT_MID);
-    lv_obj_add_style(auto_mode_label, &label_chinese_style, 0);
-    lv_label_set_text(auto_mode_label, "专家模式");
-
-    auto_mode_Switch = lv_switch_create(ui_Panel7);
-    lv_obj_set_width(auto_mode_Switch, 50);
-    lv_obj_set_height(auto_mode_Switch, 25);
-    lv_obj_set_align(auto_mode_Switch, LV_ALIGN_RIGHT_MID);
-    static uint8_t auto_mode_switch_id = 2;
-    lv_obj_add_event_cb(auto_mode_Switch, switch_event_cb, LV_EVENT_CLICKED, &auto_mode_switch_id);
+//    ui_Panel7 = lv_obj_create(ui_Panel8);
+//    lv_obj_add_style(ui_Panel7, &panel_content_style, 0);
+//    lv_obj_align_to(ui_Panel7, ui_Panel6, LV_ALIGN_OUT_BOTTOM_MID, 0, 5);
+//    lv_obj_clear_flag(ui_Panel7, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+//
+//    auto_mode_label = lv_label_create(ui_Panel7);
+//    lv_obj_set_width(auto_mode_label, LV_SIZE_CONTENT);   /// 1
+//    lv_obj_set_height(auto_mode_label, LV_SIZE_CONTENT);    /// 1
+//    lv_obj_set_align(auto_mode_label, LV_ALIGN_LEFT_MID);
+//    lv_obj_add_style(auto_mode_label, &label_chinese_style, 0);
+//    lv_label_set_text(auto_mode_label, "专家模式");
+//
+//    auto_mode_Switch = lv_switch_create(ui_Panel7);
+//    lv_obj_set_width(auto_mode_Switch, 50);
+//    lv_obj_set_height(auto_mode_Switch, 25);
+//    lv_obj_set_align(auto_mode_Switch, LV_ALIGN_RIGHT_MID);
+//    static uint8_t auto_mode_switch_id = 2;
+//    lv_obj_add_event_cb(auto_mode_Switch, switch_event_cb, LV_EVENT_CLICKED, &auto_mode_switch_id);
 }

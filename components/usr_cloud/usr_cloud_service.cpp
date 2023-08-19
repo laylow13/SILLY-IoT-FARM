@@ -79,19 +79,20 @@ namespace usr {
                 }
                 xQueueSend(usr::motor_queue, &motor_level, pdMS_TO_TICKS(5));
             }
-        } else if (strcmp(device_name, "专家模式") == 0) {
-            if (strcmp(param_name, ESP_RMAKER_DEF_POWER_NAME) == 0) {
-                if (val.val.b) {
-                    lvgl_port_lock(0);
-                    lv_obj_add_state(auto_mode_Switch, LV_STATE_CHECKED);
-                    lvgl_port_unlock();
-                } else {
-                    lvgl_port_lock(0);
-                    lv_obj_clear_state(auto_mode_Switch, LV_STATE_CHECKED);
-                    lvgl_port_unlock();
-                }
-            }
         }
+//        } else if (strcmp(device_name, "专家模式") == 0) {
+//            if (strcmp(param_name, ESP_RMAKER_DEF_POWER_NAME) == 0) {
+//                if (val.val.b) {
+//                    lvgl_port_lock(0);
+//                    lv_obj_add_state(auto_mode_Switch, LV_STATE_CHECKED);
+//                    lvgl_port_unlock();
+//                } else {
+//                    lvgl_port_lock(0);
+//                    lv_obj_clear_state(auto_mode_Switch, LV_STATE_CHECKED);
+//                    lvgl_port_unlock();
+//                }
+//            }
+//        }
         return ESP_OK;
     }
 
@@ -126,10 +127,10 @@ namespace usr {
         /***********************************switches*******************************/
         switch_light = esp_rmaker_switch_device_create("补光", nullptr, false);
         switch_water = esp_rmaker_switch_device_create("浇水", nullptr, false);
-        switch_mode = esp_rmaker_switch_device_create("专家模式", nullptr, false);
+//        switch_mode = esp_rmaker_switch_device_create("专家模式", nullptr, false);
         light_power = esp_rmaker_device_get_param_by_name(switch_light, ESP_RMAKER_DEF_POWER_NAME);
         water_power = esp_rmaker_device_get_param_by_name(switch_water, ESP_RMAKER_DEF_POWER_NAME);
-        auto_mode_power = esp_rmaker_device_get_param_by_name(switch_mode, ESP_RMAKER_DEF_POWER_NAME);
+//        auto_mode_power = esp_rmaker_device_get_param_by_name(switch_mode, ESP_RMAKER_DEF_POWER_NAME);
         light_red = esp_rmaker_param_create("红", nullptr, esp_rmaker_int(127),
                                             PROP_FLAG_READ | PROP_FLAG_WRITE);
         esp_rmaker_param_add_bounds(light_red, esp_rmaker_int(0), esp_rmaker_int(255), esp_rmaker_int(1));
@@ -148,7 +149,7 @@ namespace usr {
         esp_rmaker_device_add_param(switch_light, light_blue);
         esp_rmaker_device_add_cb(switch_light, write_cb, nullptr);
         esp_rmaker_device_add_cb(switch_water, write_cb, nullptr);
-        esp_rmaker_device_add_cb(switch_mode, write_cb, nullptr);
+//        esp_rmaker_device_add_cb(switch_mode, write_cb, nullptr);
 
         esp_rmaker_node_add_device(node, sensor_light);
         esp_rmaker_node_add_device(node, sensor_pressure);
@@ -156,7 +157,7 @@ namespace usr {
         esp_rmaker_node_add_device(node, sensor_temp);
         esp_rmaker_node_add_device(node, switch_light);
         esp_rmaker_node_add_device(node, switch_water);
-        esp_rmaker_node_add_device(node, switch_mode);
+//        esp_rmaker_node_add_device(node, switch_mode);
     }
 
     void rainmaker_init() {
