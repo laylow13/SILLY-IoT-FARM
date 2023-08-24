@@ -1,32 +1,50 @@
-# _Sample project_
+## 核心组件
 
-(See the README.md file in the upper level 'examples' directory for more information about examples.)
+ESP-IDF+FreeRTOS+LVGL+ESP-IOT-Solution+RainMaker
 
-This is the simplest buildable example. The example is used by command `idf.py create-project`
-that copies the project to user specified path and set it's name. For more information follow the [docs page](https://docs.espressif.com/projects/esp-idf/en/latest/api-guides/build-system.html#start-a-new-project)
+### 主要功能
 
+- 传感器数据读取
+- 设备控制
+- 屏幕交互
+- 云服务
 
+### 传感器数据读取
 
-## How to use example
-We encourage the users to use the example as a template for the new projects.
-A recommended way is to follow the instructions on a [docs page](https://docs.espressif.com/projects/esp-idf/en/latest/api-guides/build-system.html#start-a-new-project).
+主要传感器包括：
 
-## Example folder contents
+- 气压（BME280:I2C）
+- 环境光（VEML6040:I2C）
+- 温湿度（SHT30:I2C）
+- 土壤湿度传感器 ADC
 
-The project **sample_project** contains one source file in C language [main.c](main/main.c). The file is located in folder [main](main).
+---
 
-ESP-IDF projects are built using CMake. The project build configuration is contained in `CMakeLists.txt`
-files that provide set of directives and instructions describing the project's source files and targets
-(executable, library, or both). 
+主要借助于ESP-IOT-Solution组件实现，该组件包含多个传感器的驱动程序，并进行了封装，使用及其方便。所有传感器数据读取都封装到同一个定时任务中。
 
-Below is short explanation of remaining files in the project folder.
+### 设备控制
 
-```
-├── CMakeLists.txt
-├── main
-│   ├── CMakeLists.txt
-│   └── main.c
-└── README.md                  This is the file you are currently reading
-```
-Additionally, the sample project contains Makefile and component.mk files, used for the legacy Make based build system. 
-They are not used or needed when building with CMake and idf.py.
+主要控制设备：
+
+- ws2812灯带
+- 直流电机（水泵，风扇...）
+
+---
+
+ws2812调用对应的库驱动，直流电机可以pwm调速或简单定速驱动。灯光和电机分别封装到对应的任务，阻塞式等待控制指令。
+
+### 屏幕交互
+
+使用一块ST7789屏幕作为显示，按键做输入设备。ESP-IOT-Solution组件中也提供了屏幕驱动和适配到IDF后的LVGL库（7.x版本），因为版本一直没更新，就采用了ESP-PORT-LVGL库（乐鑫提供的用于移植LVGL的库）和LVGL官方库（latest，8.x）实现屏幕驱动、GUI、按键输入。还可以用LVGL提供的实现方案（CSDN上介绍的基本都是这种）。
+UI设计的非常简单，最初使用SquareLine Studio绘制了草图，但对于简单的UI设计，直接写代码要更方便一些。
+主要功能：
+
+- 传感器数据显示
+- 传感器历史数据曲线，数值上下警示线
+- 电机控制开关
+- 灯光色彩设置及开关
+
+### 云服务
+
+使用的ESP Rainmaker做的云服务，库封装程度很高，非常便于快速开发。借助于RainMaker可以在手机APP上执行类似于“屏幕交互”中的功能，同时还可以设置定时任务，自动执行规则等，功能比较丰富。
+
